@@ -2,7 +2,8 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const axios = require('axios');
 const mockAdapter = require('axios-mock-adapter');
-const app = require('../server/app');
+const app = require('../server/app.js');
+
 
 // Connect mock adapter
 const mock = new mockAdapter(axios.create());
@@ -29,21 +30,21 @@ function withMovie(i) {
 
 
 mock
-  .onGet('http://www.omdbapi.com', { params: { i: 'tt3896198', apiKey: '8730e0e' }})
+  .onGet('http://www.omdbapi.com', { params: { i: 'tt3896198', apiKey: '180ebf61' }})
   .replyOnce(withMovie(0))
-	.onGet('http://www.omdbapi.com/', { params: { i: 'tt3896198', apiKey: '8730e0e' }})
+	.onGet('http://www.omdbapi.com/', { params: { i: 'tt3896198', apiKey: '180ebf61' }})
   .replyOnce(withMovie(0))
-  .onGet('http://www.omdbapi.com/?i=tt3896198&apikey=8730e0e')
+  .onGet('http://www.omdbapi.com/?i=tt3896198&apikey=180ebf61')
   .replyOnce(withMovie(0))
-  .onGet('http://www.omdbapi.com/?apikey=8730e0e&i=tt3896198')
+  .onGet('http://www.omdbapi.com/?apikey=180ebf61&i=tt3896198')
   .replyOnce(withMovie(0))
-  .onGet('http://www.omdbapi.com', { params: { t: 'baby driver', apiKey: '8730e0e' }})
+  .onGet('http://www.omdbapi.com', { params: { t: 'baby driver', apiKey: '180ebf61' }})
   .replyOnce(withMovie(1))
-  .onGet('http://www.omdbapi.com/', { params: { t: 'baby driver', apiKey: '8730e0e' }})
+  .onGet('http://www.omdbapi.com/', { params: { t: 'baby driver', apiKey: '180ebf61' }})
   .replyOnce(withMovie(1))
-  .onGet('http://www.omdbapi.com/?t=baby%20driver&apikey=8730e0e')
+  .onGet('http://www.omdbapi.com/?t=baby%20driver&apikey=180ebf61')
   .replyOnce(withMovie(1))
-  .onGet('http://www.omdbapi.com/?apikey=8730e0e&t=baby%20driver')
+  .onGet('http://www.omdbapi.com/?apikey=180ebf61&t=baby%20driver')
   .replyOnce(withMovie(1))
 
 const expect = chai.expect;
@@ -55,6 +56,7 @@ describe("server module", function() {
 	  chai.request(app)
       .get('/?i=tt3896198')
       .end((err, res) => {
+        console.log('Response:', res.body.Title); 
         expect(res).to.have.status(200);
         expect(err).to.be.null;
         expect(res.body.Title).to.equal('Guardians of the Galaxy Vol. 2');
@@ -73,9 +75,9 @@ describe("server module", function() {
     })
   });
   
-  it("GET /?t=baby%20driver responds with movie data", (done) => {
+  it("GET /?T=baby%20driver responds with movie data", (done) => {
 	  chai.request(app)
-      .get('/?t=baby%20driver')
+      .get('/?T=baby%20driver')
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(err).to.be.null;
